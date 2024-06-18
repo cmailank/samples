@@ -1,0 +1,83 @@
+{
+    "name":"multi-node-one-group-job-immediate-linux",
+    "description": "demonstrating an immediate job executing sequential on multiple nodes",
+    "immediate": true,
+    "exceptionRules":[],
+    "target": {
+            "executionType": "sequential",
+            "groups":[
+                {
+                    "timeoutSeconds": 300,
+                    "batchSize": {
+                        "type": "number",
+                        "value": 2
+                    },
+                    "distributionMethod": "batching",
+                    "successCriteria": [
+                        {
+                            "numRuns": { "type": "percent", "value": 100 },
+                            "status": "success"
+                        }
+                    ],
+                    "nodeListType":"nodes",
+                    "nodeIdentifiers":[
+                        "--NODE1--",
+                        "--NODE2--",
+                        "--NODE3--",
+                        "--NODE4--",
+                        "--NODE5--"
+                    ]
+                },
+                {
+                    "timeoutSeconds": 300,
+                    "batchSize": {
+                        "type": "number",
+                        "value": 2
+                    },
+                    "distributionMethod": "batching",
+                    "successCriteria": [
+                        {
+                            "numRuns": { "type": "percent", "value": 100 },
+                            "status": "success"
+                        }
+                    ],
+                    "nodeListType":"nodes",
+                    "nodeIdentifiers":[
+                        "--NODE6--",
+                        "--NODE7--",
+                        "--NODE8--"
+                    ]
+                }
+            ]
+        },
+    "actions": {
+            "accessMode": "agent",
+            "steps":
+            [
+                {
+                    "stepNumber": 1,
+                    "interpreter": {
+                        "name": "chef/courier-interpreter/os/shell"
+                    },
+                    "command": [
+                        "sleep 60"
+                    ],
+                    "inputs": {},
+                    "expectedInputs": { },
+                    "outputFieldRules": {},
+                    "retryCount": 0,
+                    "failureBehavior": {
+                        "action": "retryThenFail",
+                        "retryBackoffStrategy": {
+                            "name": "none",
+                            "delaySeconds": 0,
+                            "arguments": []
+                        }
+                    },
+                    "limits": {},
+                    "conditions": []
+                }
+            ]
+        },
+    "timeoutSeconds": 300
+}
