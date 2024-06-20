@@ -1,0 +1,52 @@
+{
+    "name":"job saved list1",
+    "description": "demonstrating running a job using a saved node list",
+    "immediate": true,
+    "exceptionRules":[],
+    "target": {
+            "executionType": "sequential",
+            "groups":[
+                {
+                    "timeoutSeconds": 60,
+                    "batchSize": {
+                        "type": "number",
+                        "value": 5
+                    },
+                    "distributionMethod":"batching",
+                    "successCriteria": [{ "numRuns": { "type": "percent", "value": 100 }, "status": "success" }],
+                    "nodeListType":"savedList",
+		            "listId": "--NODE LIST ID--"
+                }
+            ]
+        },
+    "actions": {
+            "accessMode": "agent",
+            "steps": 
+            [
+                {
+                    "stepNumber": 1,
+                    "interpreter": {
+                        "name": "chef-platform/shell-interpreter"
+                    },
+                    "command": [
+                        "sleep 10"
+                    ],
+                    "inputs": {},
+                    "expectedInputs": { },
+                    "OutputFieldRules": {},
+                    "retryCount": 2,
+                    "failureBehavior": {
+                        "action": "retryThenFail",
+                        "retryBackoffStrategy": {
+                            "name": "none",
+                            "delaySeconds": 0,
+                            "arguments": [1,3,5]
+                        }
+                    },
+                    "limits": {},
+                    "conditions": []
+                }
+            ]
+        },
+    "timeoutSeconds": 300
+}

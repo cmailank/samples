@@ -1,0 +1,80 @@
+{
+    "name":"multi-node-two-group-immediate-linux",
+    "description": "An integration test: demonstrating a immediate job executing sequential on multi nodes",
+    "immediate": true,
+    "exceptionRules":[],
+    "target": {
+            "executionType": "sequential",
+            "groups":[
+                {
+                    "timeoutSeconds": 1500,
+                    "batchSize": {
+                        "type": "number",
+                        "value": 1
+                    },
+                    "distributionMethod": "batching",
+                    "successCriteria": [
+                        {
+                            "numRuns": { "type": "percent", "value": 100 },
+                            "status": "success"
+                        }
+                    ],
+                    "nodeListType":"nodes",
+                    "nodeIdentifiers":[
+                        "--NODE1--",
+                        "--NODE2--"
+                    ]
+                },
+                {
+                    "timeoutSeconds": 1500,
+                    "batchSize": {
+                        "type": "percent",
+                        "value": 100
+                    },
+                    "distributionMethod": "batching",
+                    "successCriteria": [
+                        {
+                            "numRuns": { "type": "percent", "value": 100 },
+                            "status": "success"
+                        }
+                    ],
+                    "nodeListType":"nodes",
+                    "nodeIdentifiers":[
+                        "--NODE3--",
+                        "--NODE4--",
+                        "--NODE5--"
+                    ]
+                }
+            ]
+        },
+    "actions": {
+            "accessMode": "agent",
+            "steps":
+            [
+                {
+                    "stepNumber": 1,
+                    "interpreter": {
+                        "name": "chef/courier-interpreter/os/shell"
+                    },
+                    "command": [
+                        "sleep 60"
+                    ],
+                    "inputs": {},
+                    "expectedInputs": { },
+                    "outputFieldRules": {},
+                    "retryCount": 0,
+                    "failureBehavior": {
+                        "action": "retryThenFail",
+                        "retryBackoffStrategy": {
+                            "name": "none",
+                            "delaySeconds": 0,
+                            "arguments": []
+                        }
+                    },
+                    "limits": {},
+                    "conditions": []
+                }
+            ]
+        },
+    "timeoutSeconds": 3000
+}
