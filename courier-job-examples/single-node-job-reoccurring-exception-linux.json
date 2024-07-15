@@ -1,60 +1,66 @@
 {
     "name":"single-node-job-reoccurring-linux",
     "description": "demonstrating a scheduled job that runs multiple times with exceptions",
-    "immediate": false,
-    "schduleRule": "RRULE:FREQ=MINUTELY;COUNT=10",
-    "exceptionRules":["RRULE:FREQ=MINUTELY;INTERVAL=2"],
+    "scheduleRule": "RRULE:FREQ=MINUTELY;COUNT=10",
+    "exceptionRules":[{"rrule": "RRULE:FREQ=MINUTELY;INTERVAL=2"}],
     "target": {
-            "executionType": "sequential",
-            "groups":[
-                {
-                    "timeoutSeconds": 300,
-                    "batchSize": {
-                        "type": "number",
-                        "value": 1
-                    },
-                    "distributionMethod": "batching",
-                    "successCriteria": [
-                        {
-                            "numRuns": { "type": "percent", "value": 100 },
-                            "status": "success"
-                        }
-                    ],
-                    "nodeListType":"nodes",
-                    "nodeIdentifiers":[
-                        "--NODE1--"
-                    ]
-                }
-            ]
-        },
+        "executionType": "sequential",
+        "groups":[
+            {
+                "timeoutSeconds": 300,
+                "batchSize": {
+                    "type": "number",
+                    "value": 1
+                },
+                "distributionMethod": "batching",
+                "successCriteria": [
+                    {
+                        "numRuns": { "type": "percent", "value": 100 },
+                        "status": "success"
+                    }
+                ],
+                "nodeListType":"nodes",
+                "nodeIdentifiers":[
+                     "--NODE1--"
+                ]
+            }
+        ]
+    },
     "actions": {
-            "accessMode": "agent",
-            "steps":
-            [
-                {
-                    "stepNumber": 1,
-                    "interpreter": {
-                        "name": "chef/courier-interpreter/os/shell"
-                    },
-                    "command": [
-                        "sleep 5;date;sleep 5"
-                    ],
-                    "inputs": {},
-                    "expectedInputs": { },
-                    "outputFieldRules": {},
-                    "retryCount": 0,
-                    "failureBehavior": {
-                        "action": "retryThenFail",
-                        "retryBackoffStrategy": {
-                            "name": "none",
-                            "delaySeconds": 0,
-                            "arguments": []
-                        }
-                    },
-                    "limits": {},
-                    "conditions": []
-                }
-            ]
-        },
-    "timeoutSeconds": 300
+        "accessMode": "agent",
+        "steps":
+        [
+            {
+                "name": "step to sleep",
+                "interpreter": {
+                  "skill": {
+                    "minVersion": "1.0.0"
+                  },
+                  "name": "chef-platform/shell-interpreter"
+                },
+                "command": {
+                  "linux": [
+                    "sleep 10"
+                  ],
+                  "windows": [
+                    "timeout 10"
+                  ]
+                },
+                "inputs": {},
+                "expectedInputs": { },
+                "outputFieldRules": {},
+                "retryCount": 2,
+                "failureBehavior": {
+                  "action": "retryThenFail",
+                  "retryBackoffStrategy": {
+                    "type": "linear",
+                    "delaySeconds": 1,
+                    "arguments": [1,3,5]
+                  }
+                },
+                "limits": {},
+                "conditions": []
+            }
+        ]
+    }
 }

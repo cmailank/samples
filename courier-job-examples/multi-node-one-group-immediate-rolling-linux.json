@@ -1,63 +1,67 @@
 {
-    "name":"multi-node-one-group-immediate-rolling-linux",
+    "name":"multi-node-one-group-immediate-rolling",
     "description": "demonstrating a immediate job executing sequential on batches of percentage",
-    "immediate": true,
+    "scheduleRule": "immediate",
     "exceptionRules":[],
     "target": {
-            "executionType": "sequential",
-            "groups":[
-                {
-                    "timeoutSeconds": 300,
-                    "batchSize": {
-                        "type": "percent",
-                        "value": 20
-                    },
-                    "distributionMethod": "rolling",
-                    "successCriteria": [
-                        {
-                            "numRuns": { "type": "percent", "value": 100 },
-                            "status": "success"
-                        }
-                    ],
-                    "nodeListType":"nodes",
-                    "nodeIdentifiers":[
-                        "--NODE1--",
-                        "--NODE2--",
-                        "--NODE3--",
-                        "--NODE4--",
-                        "--NODE5--"
-                    ]
-                }
-            ]
-        },
+        "executionType": "sequential",
+        "groups":[
+            {
+                "timeoutSeconds": 300,
+                "batchSize": {
+                    "type": "percent",
+                    "value": 20
+                },
+                "distributionMethod": "rolling",
+                "successCriteria": [
+                    {
+                        "numRuns": { "type": "percent", "value": 100 },
+                        "status": "success"
+                    }
+                ],
+                "nodeListType":"nodes",
+                "nodeIdentifiers":[
+                    "--NODE1--",
+                    "--NODE2--",
+                    "--NODE3--",
+                    "--NODE4--",
+                    "--NODE5--"
+                ]
+            }
+        ]
+    },
     "actions": {
-            "accessMode": "agent",
-            "steps":
-            [
-                {
-                    "stepNumber": 1,
-                    "interpreter": {
-                        "name": "chef/courier-interpreter/os/shell"
-                    },
-                    "command": [
-                        "sleep $((RANDOM % 120))"
-                    ],
-                    "inputs": {},
-                    "expectedInputs": { },
-                    "outputFieldRules": {},
-                    "retryCount": 0,
-                    "failureBehavior": {
-                        "action": "retryThenFail",
-                        "retryBackoffStrategy": {
-                            "name": "none",
-                            "delaySeconds": 0,
-                            "arguments": []
-                        }
-                    },
-                    "limits": {},
-                    "conditions": []
-                }
-            ]
-        },
-    "timeoutSeconds": 300
+        "accessMode": "agent",
+        "steps":
+        [
+            {
+                "name": "step to sleep for a random period",
+                "interpreter": {
+                  "skill": {
+                    "minVersion": "1.0.0"
+                  },
+                  "name": "chef-platform/shell-interpreter"
+                },
+                "command": {
+                  "linux": [
+                    "sleep $((RANDOM % 120))"
+                  ]
+                },
+                "inputs": {},
+                "expectedInputs": { },
+                "outputFieldRules": {},
+                "retryCount": 1,
+                "failureBehavior": {
+                    "action": "retryThenFail",
+                    "retryBackoffStrategy": {
+                        "name": "none",
+                        "delaySeconds": 1,
+                        "arguments": []
+                    }
+                },
+                "limits": {},
+                "conditions": []
+            }
+        ]
+    }
 }
