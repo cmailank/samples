@@ -1,7 +1,7 @@
 {
-    "name":"single-node-job-future-linux",
-    "description": "demonstrating a scheduled job executing once",
-    "scheduleRule": "RRULE:FREQ=MINUTELY;COUNT=2;WKST=MO",
+    "name":"multi-node-multi-group-job-batching",
+    "description": "demonstrating an immediate job executing sequential on multiple nodes with batched rollout",
+    "scheduleRule": "immediate",
     "exceptionRules":[],
     "target": {
         "executionType": "sequential",
@@ -10,7 +10,7 @@
                 "timeoutSeconds": 300,
                 "batchSize": {
                     "type": "number",
-                    "value": 1
+                    "value": 2
                 },
                 "distributionMethod": "batching",
                 "successCriteria": [
@@ -21,7 +21,31 @@
                 ],
                 "nodeListType":"nodes",
                 "nodeIdentifiers":[
-                    "--NODE1--"
+                    "--NODE1--",
+                    "--NODE2--",
+                    "--NODE3--",
+                    "--NODE4--",
+                    "--NODE5--"
+                ]
+            },
+            {
+                "timeoutSeconds": 300,
+                "batchSize": {
+                    "type": "number",
+                    "value": 2
+                },
+                "distributionMethod": "batching",
+                "successCriteria": [
+                    {
+                        "numRuns": { "type": "percent", "value": 100 },
+                        "status": "success"
+                    }
+                ],
+                "nodeListType":"nodes",
+                "nodeIdentifiers":[
+                    "--NODE6--",
+                    "--NODE7--",
+                    "--NODE8--"
                 ]
             }
         ]
@@ -31,7 +55,7 @@
         "steps":
         [
             {
-                "name": "step to sleep",
+                "name": "step to sleep for a random period",
                 "interpreter": {
                   "skill": {
                     "minVersion": "1.0.0"
@@ -40,16 +64,13 @@
                 },
                 "command": {
                   "linux": [
-                    "sleep 10"
-                  ],
-                  "windows": [
-                    "timeout 10"
+                    "sleep $((RANDOM % 120))"
                   ]
                 },
                 "inputs": {},
                 "expectedInputs": { },
                 "outputFieldRules": {},
-                "retryCount": 2,
+                "retryCount": 1,
                 "failureBehavior": {
                   "action": "retryThenFail",
                   "retryBackoffStrategy": {

@@ -1,0 +1,89 @@
+{
+  "name":"<STRING>",
+  "description": "<STRING>",
+  "scheduleRule": "<STRING>",
+  "exceptionRules": [],
+  "target": {
+    "executionType": "<ENUM>",
+    "groups":[
+      {
+        "timeoutSeconds": <INTEGER>,
+        "batchSize": {
+          "type": "<ENUM>",
+          "value": <INTEGER>
+        },
+        "distributionMethod": "<ENUM>",
+        "successCriteria": [
+          {
+            "numRuns": {
+              "type": "<ENUM>",
+              "value": <INTEGER>
+            },
+            "status": "<ENUM>"
+          }
+        ],
+        "nodeListType": "<ENUM>",
+        "listId": "<STRING>",
+        "filterId": <INTEGER>,
+        "nodeIdentifiers":["<STRING>"],
+        "filter": {}
+      }
+    ]
+  },
+  "actions": {
+    "accessMode": "agent",
+    "steps":
+    [
+      {
+        "name": "<STRING>",
+        "description": "<STRING>",
+        "command": {},
+        "inputs": {},
+        "interpreter": {
+          "skill": {
+            "minVersion": "",
+            "maxVersion": ""
+          },
+          "name": ""
+        },
+        "expectedInputs": {
+          "<INPUT_NAME>": {
+            "default": "<STRING>",
+            "required": <BOOLEAN>,
+            "sensitive": <BOOLEAN>
+          }
+        },
+        "outputFieldRules": {
+          "sourceType": "<ENUM>",
+          "source": "<STRING>",
+          "extractMethod": "<ENUM>",
+          "expression": "<ENUM>",
+          "required": <BOOLEAN>,
+          "sensitive": <BOOLEAN>
+        },
+        "retryCount": <INTEGER>,
+        "failureBehavior": {
+          "action": "<ENUM>",
+          "retryBackoffStrategy": {
+            "name": "<ENUM>",
+            "delaySeconds": <INTEGER>,
+            "arguments": []
+          }
+        },
+        "limits": {
+          "cores": <INTEGER>,
+          "cpu": <FLOAT>,
+          "timeoutSeconds": <INTEGER>,
+        },
+        "conditions": [
+          {
+            "inputName": "<STRING>",
+            "negate": <BOOLEAN>,
+            "operator": "<ENUM>",
+            "value": "<STRING>"
+          }
+        ]
+      }
+    ]
+  }
+}

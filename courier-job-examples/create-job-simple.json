@@ -1,14 +1,14 @@
 {
   "name": "a simple job to perform one action",
-  "description": "Perform a simple shell command on specific node to understand the fundamentals of Courier jobs",
-  "immediate": true,
-  "exceptionRules":[],
+  "description": "Perform a simple shell command on specific nodes to understand the fundamentals of Courier jobs",
+  "scheduleRule": "immediate",
+  "exceptionRules": [],
   "target": {
     "executionType": "sequential",
     "groups":[
       {
         "timeoutSeconds": 240,
-        "batchSize": { },
+        "batchSize": {},
         "distributionMethod": "batching",
         "successCriteria": [
           {
@@ -31,7 +31,8 @@
         "successCriteria": [{ "numRuns": { "type": "percent", "value": 100 }, "status": "success" }],
         "nodeListType":"nodes",
         "nodeIdentifiers":[
-          "9085037e-81e9-42fc-8c30-dc968c66fee3"
+          "--NODE2--",
+          "--NODE3--"
         ]
       }
     ]
@@ -41,13 +42,21 @@
     "steps":
     [
       {
-        "stepNumber": 1,
+        "name": "step to sleep",
         "interpreter": {
+          "skill": {
+            "minVersion": "1.0.0"
+          },
           "name": "chef-platform/shell-interpreter"
         },
-        "command": [
-          "sleep 10"
-        ],
+        "command": {
+          "linux": [
+            "sleep 10"
+          ],
+          "windows": [
+            "timeout 10"
+          ]
+        },
         "inputs": {},
         "expectedInputs": { },
         "outputFieldRules": {},
@@ -55,8 +64,8 @@
         "failureBehavior": {
           "action": "retryThenFail",
           "retryBackoffStrategy": {
-            "name": "none",
-            "delaySeconds": 0,
+            "type": "linear",
+            "delaySeconds": 1,
             "arguments": [1,3,5]
           }
         },
@@ -64,6 +73,5 @@
         "conditions": []
       }
     ]
-  },
-  "timeoutSeconds": 300
+  }
 }
